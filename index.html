@@ -12,20 +12,20 @@
 
     <meta
         name="theme-color"
-        content="#0e0c0c"
+        content="#0b0909"
     >
 
     <meta
         name="description"
-        content="Broken Throne - عالم الرواية والقراءة"
+        content="Broken Throne — رواية وعالمها"
     >
 
     <title>Broken Throne</title>
 
 
-    <!-- =========================
+    <!-- ==================================================
          FONTS
-    ========================== -->
+    ================================================== -->
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -36,14 +36,10 @@
     >
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap"
         rel="stylesheet"
     >
 
-
-    <!-- =========================
-         CSS
-    ========================== -->
 
     <link
         rel="stylesheet"
@@ -57,7 +53,7 @@
 
 
     <!-- ==================================================
-         شاشة الدخول
+         SPLASH
     ================================================== -->
 
     <section
@@ -67,9 +63,19 @@
     >
 
         <div
+            class="splash-noise"
+            aria-hidden="true"
+        ></div>
+
+
+        <div
             class="splash-crack"
             aria-hidden="true"
         ></div>
+
+
+        <div class="splash-glow splash-glow-one"></div>
+        <div class="splash-glow splash-glow-two"></div>
 
 
         <div class="splash-content">
@@ -82,6 +88,9 @@
             <h1 class="splash-title">
                 Broken Throne
             </h1>
+
+
+            <div class="splash-line"></div>
 
 
             <button
@@ -99,7 +108,7 @@
 
 
     <!-- ==================================================
-         الموقع
+         SITE
     ================================================== -->
 
     <div
@@ -109,100 +118,123 @@
 
 
         <!-- ==================================================
-             الشريط الجانبي
+             SIDEBAR
         ================================================== -->
 
         <aside class="sidebar">
 
 
-            <div class="brand">
+            <div class="sidebar-top">
 
-                <span class="brand-title">
-                    Broken Throne
-                </span>
+                <div class="brand">
+
+                    <span class="brand-kicker">
+                        THE
+                    </span>
+
+                    <span class="brand-title">
+                        Broken Throne
+                    </span>
+
+                </div>
+
+
+                <div class="brand-divider"></div>
+
+
+                <nav
+                    class="site-nav"
+                    aria-label="التنقل الرئيسي"
+                >
+
+                    <ul class="nav-list">
+
+                        <li>
+                            <button
+                                class="nav-link active"
+                                type="button"
+                                data-target="home"
+                            >
+                                <span class="nav-number">01</span>
+                                <span>الرئيسية</span>
+                            </button>
+                        </li>
+
+
+                        <li>
+                            <button
+                                class="nav-link"
+                                type="button"
+                                data-target="chapters"
+                            >
+                                <span class="nav-number">02</span>
+                                <span>الفصول</span>
+                            </button>
+                        </li>
+
+
+                        <li>
+                            <button
+                                class="nav-link"
+                                type="button"
+                                data-target="world"
+                            >
+                                <span class="nav-number">03</span>
+                                <span>عالم الرواية</span>
+                            </button>
+                        </li>
+
+
+                        <li>
+                            <button
+                                class="nav-link"
+                                type="button"
+                                data-target="settings"
+                            >
+                                <span class="nav-number">04</span>
+                                <span>الإعدادات</span>
+                            </button>
+                        </li>
+
+                    </ul>
+
+                </nav>
 
             </div>
 
 
-            <nav
-                class="site-nav"
-                aria-label="التنقل الرئيسي"
-            >
+            <div class="sidebar-bottom">
 
-                <ul class="nav-list">
+                <span>
+                    BROKEN THRONE
+                </span>
 
+                <small>
+                    A STORY OF A BROKEN KINGDOM
+                </small>
 
-                    <li>
-
-                        <button
-                            class="nav-link active"
-                            type="button"
-                            data-target="home"
-                        >
-                            الرئيسية
-                        </button>
-
-                    </li>
-
-
-                    <li>
-
-                        <button
-                            class="nav-link"
-                            type="button"
-                            data-target="chapters"
-                        >
-                            الفصول
-                        </button>
-
-                    </li>
-
-
-                    <li>
-
-                        <button
-                            class="nav-link"
-                            type="button"
-                            data-target="world"
-                        >
-                            عالم الرواية
-                        </button>
-
-                    </li>
-
-
-                    <li>
-
-                        <button
-                            class="nav-link"
-                            type="button"
-                            data-target="settings"
-                        >
-                            الإعدادات
-                        </button>
-
-                    </li>
-
-
-                </ul>
-
-            </nav>
+            </div>
 
         </aside>
 
 
 
         <!-- ==================================================
-             المحتوى
+             MAIN
         ================================================== -->
 
         <main class="content">
+
+
+            <div class="page-decoration page-decoration-one"></div>
+            <div class="page-decoration page-decoration-two"></div>
+
 
             <div class="content-inner">
 
 
                 <!-- ==================================================
-                     الرئيسية
+                     HOME
                 ================================================== -->
 
                 <section
@@ -211,24 +243,55 @@
                 >
 
 
+                    <div class="home-kicker">
+
+                        <span class="home-kicker-line"></span>
+
+                        <span>
+                            THE STORY BEGINS
+                        </span>
+
+                    </div>
+
+
                     <div class="hero">
 
 
-                        <!-- الغلاف -->
+                        <!-- COVER -->
 
-                        <div class="hero-cover">
+                        <div class="hero-cover-wrap">
 
-                            <img
-                                src="assets/cover.webp"
-                                alt="غلاف رواية Broken Throne"
-                                loading="eager"
-                            >
+                            <div class="hero-cover-shadow"></div>
+
+
+                            <div class="hero-cover">
+
+                                <img
+                                    src="assets/cover.webp"
+                                    alt="غلاف رواية Broken Throne"
+                                    loading="eager"
+                                >
+
+                            </div>
+
+
+                            <div class="cover-caption">
+
+                                <span>
+                                    BROKEN THRONE
+                                </span>
+
+                                <span>
+                                    ORIGINAL NOVEL
+                                </span>
+
+                            </div>
 
                         </div>
 
 
 
-                        <!-- المعلومات -->
+                        <!-- INFO -->
 
                         <div class="hero-info">
 
@@ -243,48 +306,89 @@
                             </h1>
 
 
+                            <p class="novel-subtitle">
+                                حين ينكسر العرش، لا يعود السؤال:
+                                من سيجلس عليه؟
+                            </p>
+
+
                             <div class="novel-meta">
 
                                 <span>
+                                    <strong>
+                                        النوع
+                                    </strong>
+
                                     رواية
                                 </span>
 
+
                                 <span>
-                                    مكتملة قريبًا
+                                    <strong>
+                                        الحالة
+                                    </strong>
+
+                                    مستمرة
+                                </span>
+
+
+                                <span>
+                                    <strong>
+                                        اللغة
+                                    </strong>
+
+                                    العربية
                                 </span>
 
                             </div>
 
 
-                            <p class="synopsis">
-                                طفلٌ صغير يقف أمام محكمةٍ عظيمة،
-                                محاطًا بالشيوخ والقضاة والوجوه التي
-                                تحدّق به بصمت.
-                            </p>
+                            <div class="hero-divider"></div>
 
 
-                            <p class="synopsis">
-                                كانت تعابير وجهه مليئة بالفضول،
-                                وعيناه تتنقلان بين أرجاء القاعة،
-                                يتأمل المكان من حوله وكأنه يحاول
-                                فهم ما يحدث.
-                            </p>
+                            <div class="synopsis-block">
+
+                                <span class="synopsis-label">
+                                    نبذة
+                                </span>
 
 
-                            <p class="synopsis">
-                                لم يكن يعرف لماذا أُحضر إلى هنا،
-                                ولا ما الذي ينتظره.
-                            </p>
+                                <p class="synopsis">
+
+                                    طفلٌ صغير يقف أمام محكمةٍ عظيمة،
+                                    محاطًا بالشيوخ والقضاة والوجوه
+                                    التي تحدّق به بصمت.
+
+                                </p>
 
 
-                            <p class="synopsis">
-                                تُغلق أبواب المحكمة، ويسود الصمت…
-                                قبل أن يبدأ القاضي بالكلام.
-                            </p>
+                                <p class="synopsis">
+
+                                    كانت تعابير وجهه مليئة بالفضول،
+                                    وعيناه تتنقلان بين أرجاء القاعة،
+                                    يتأمل المكان من حوله وكأنه يحاول
+                                    فهم ما يحدث.
+
+                                </p>
 
 
+                                <p class="synopsis">
 
-                            <!-- أزرار القراءة -->
+                                    لم يكن يعرف لماذا أُحضر إلى هنا،
+                                    ولا ما الذي ينتظره.
+
+                                </p>
+
+
+                                <p class="synopsis">
+
+                                    تُغلق أبواب المحكمة، ويسود الصمت…
+                                    قبل أن يبدأ القاضي بالكلام.
+
+                                </p>
+
+                            </div>
+
 
                             <div class="hero-actions">
 
@@ -293,7 +397,13 @@
                                     class="btn btn-primary"
                                     type="button"
                                 >
-                                    ابدأ القراءة
+                                    <span>
+                                        ابدأ القراءة
+                                    </span>
+
+                                    <span>
+                                        ←
+                                    </span>
                                 </button>
 
 
@@ -308,10 +418,15 @@
                             </div>
 
 
-
-                            <!-- آخر قراءة -->
+                            <!-- LAST READING -->
 
                             <div class="home-reading-card">
+
+
+                                <div class="home-reading-mark">
+                                    <span></span>
+                                </div>
+
 
                                 <div class="home-reading-info">
 
@@ -342,8 +457,27 @@
 
                             </div>
 
-
                         </div>
+
+                    </div>
+
+
+
+                    <!-- HOME FOOTER -->
+
+                    <div class="home-bottom-line">
+
+                        <span>
+                            THE THRONE REMEMBERS
+                        </span>
+
+                        <span>
+                            /
+                        </span>
+
+                        <span>
+                            THE STORY CONTINUES
+                        </span>
 
                     </div>
 
@@ -352,7 +486,7 @@
 
 
                 <!-- ==================================================
-                     الفصول
+                     CHAPTERS
                 ================================================== -->
 
                 <section
@@ -361,33 +495,58 @@
                 >
 
 
-                    <div class="chapters-header">
+                    <div class="section-heading">
 
-                        <h2 class="page-title">
-                            الفصول
-                        </h2>
+                        <div>
+
+                            <div class="section-eyebrow">
+                                ARCHIVE
+                            </div>
+
+                            <h2 class="page-title">
+                                الفصول
+                            </h2>
+
+                            <p class="page-subtitle">
+                                ابحث عن أي فصل مباشرة، أو استخدم
+                                الفهرس للوصول السريع.
+                            </p>
+
+                        </div>
 
 
-                        <p class="page-subtitle">
-                            اختر فصلًا أو انتقل مباشرة إلى الرقم
-                            أو الاسم الذي تريده.
-                        </p>
+                        <div class="chapter-total">
+
+                            <span id="chapterCount">
+                                0
+                            </span>
+
+                            <small>
+                                فصل
+                            </small>
+
+                        </div>
 
                     </div>
 
 
 
-                    <!-- أدوات الفصول -->
+                    <!-- TOOLS -->
 
                     <div class="chapter-tools">
 
 
                         <div class="chapter-search">
 
+                            <span class="search-icon">
+                                /
+                            </span>
+
+
                             <input
                                 id="chapterSearch"
                                 type="search"
-                                placeholder="رقم الفصل أو اسم الفصل..."
+                                placeholder="رقم الفصل أو اسمه..."
                                 aria-label="البحث عن فصل"
                                 autocomplete="off"
                             >
@@ -403,49 +562,55 @@
                         </div>
 
 
-
                         <button
                             id="showChapterIndex"
                             class="chapter-index-btn"
                             type="button"
                         >
-                            الفهرس
+                            فتح الفهرس
                         </button>
 
                     </div>
 
 
 
-                    <!-- معلومات الفصول -->
+                    <!-- SUMMARY -->
 
                     <div class="chapter-summary">
 
-                        <span id="chapterCount">
-                            0 فصل
+                        <span id="lastChapterLabel">
+                            آخر قراءة: —
                         </span>
 
 
-                        <span id="lastChapterLabel">
-                            آخر قراءة: —
+                        <span>
+                            الوصول السريع متاح من الفهرس
                         </span>
 
                     </div>
 
 
 
-                    <!-- الفهرس -->
+                    <!-- INDEX -->
 
                     <div
                         id="chapterIndex"
                         class="chapter-index hidden"
                     >
 
-
                         <div class="chapter-index-header">
 
-                            <h3>
-                                فهرس الفصول
-                            </h3>
+                            <div>
+
+                                <span class="section-eyebrow">
+                                    QUICK ACCESS
+                                </span>
+
+                                <h3>
+                                    فهرس الفصول
+                                </h3>
+
+                            </div>
 
 
                             <button
@@ -468,7 +633,7 @@
 
 
 
-                    <!-- قائمة الفصول -->
+                    <!-- LIST -->
 
                     <ul
                         id="chaptersList"
@@ -478,13 +643,30 @@
 
 
                     <!-- ==================================================
-                         القارئ
+                         READER
                     ================================================== -->
 
                     <div
                         id="reader"
                         class="reader hidden"
                     >
+
+
+                        <div class="reader-top-line">
+
+                            <div class="reader-location">
+                                READING MODE
+                            </div>
+
+
+                            <div
+                                id="readerProgressLabel"
+                                class="reader-progress-label"
+                            >
+                                0%
+                            </div>
+
+                        </div>
 
 
                         <div class="reader-toolbar">
@@ -495,16 +677,25 @@
                                 class="reader-back"
                                 type="button"
                             >
-                                ‹ الفصول
+                                ← الفصول
                             </button>
 
 
-                            <h3
-                                id="readerTitle"
-                                class="reader-title"
-                            >
-                                الفصل
-                            </h3>
+                            <div class="reader-heading">
+
+                                <span id="readerChapterNumber">
+                                    الفصل 01
+                                </span>
+
+
+                                <h3
+                                    id="readerTitle"
+                                    class="reader-title"
+                                >
+                                    الفصل
+                                </h3>
+
+                            </div>
 
 
                             <button
@@ -519,9 +710,6 @@
                         </div>
 
 
-
-                        <!-- شريط التقدم -->
-
                         <div
                             id="readerProgress"
                             class="reader-progress"
@@ -535,21 +723,16 @@
                         </div>
 
 
-
-                        <!-- النص -->
-
                         <article
                             id="readerText"
                             class="reader-text theme-dark font-cairo"
                         >
-
                             جاري تحميل الفصل...
-
                         </article>
 
 
 
-                        <!-- التنقل بين الفصول -->
+                        <!-- READER NAV -->
 
                         <div class="reader-navigation">
 
@@ -559,16 +742,18 @@
                                 class="reader-nav-btn"
                                 type="button"
                             >
-                                الفصل السابق
+                                <span>
+                                    الفصل السابق
+                                </span>
                             </button>
 
 
-                            <span
-                                id="readerChapterNumber"
+                            <div
+                                id="readerChapterNumberBottom"
                                 class="reader-chapter-number"
                             >
-                                الفصل 01
-                            </span>
+                                01
+                            </div>
 
 
                             <button
@@ -576,7 +761,9 @@
                                 class="reader-nav-btn"
                                 type="button"
                             >
-                                الفصل التالي
+                                <span>
+                                    الفصل التالي
+                                </span>
                             </button>
 
                         </div>
@@ -584,7 +771,7 @@
 
 
                         <!-- ==================================================
-                             إعدادات القراءة
+                             READING SETTINGS
                         ================================================== -->
 
                         <div
@@ -595,16 +782,24 @@
 
                             <div class="settings-panel-header">
 
-                                <span>
-                                    إعدادات القراءة
-                                </span>
+                                <div>
+
+                                    <span class="section-eyebrow">
+                                        READER
+                                    </span>
+
+                                    <h3>
+                                        إعدادات القراءة
+                                    </h3>
+
+                                </div>
 
 
                                 <button
                                     id="closeReadingSettings"
                                     class="panel-close"
                                     type="button"
-                                    aria-label="إغلاق إعدادات القراءة"
+                                    aria-label="إغلاق"
                                 >
                                     ✕
                                 </button>
@@ -612,8 +807,6 @@
                             </div>
 
 
-
-                            <!-- حجم الخط -->
 
                             <div class="settings-row">
 
@@ -628,7 +821,7 @@
                                         type="button"
                                         data-font-step="-1"
                                     >
-                                        A-
+                                        A−
                                     </button>
 
 
@@ -645,8 +838,6 @@
 
 
 
-                            <!-- تباعد الأسطر -->
-
                             <div class="settings-row">
 
                                 <span>
@@ -660,7 +851,7 @@
                                         type="button"
                                         data-line-step="-1"
                                     >
-                                        -
+                                        −
                                     </button>
 
 
@@ -677,8 +868,6 @@
 
 
 
-                            <!-- تباعد الفقرات -->
-
                             <div class="settings-row">
 
                                 <span>
@@ -692,7 +881,7 @@
                                         type="button"
                                         data-paragraph-step="-1"
                                     >
-                                        -
+                                        −
                                     </button>
 
 
@@ -708,8 +897,6 @@
                             </div>
 
 
-
-                            <!-- عرض النص -->
 
                             <div class="settings-row">
 
@@ -740,8 +927,6 @@
                             </div>
 
 
-
-                            <!-- الخلفية -->
 
                             <div class="settings-row">
 
@@ -781,8 +966,6 @@
 
 
 
-                            <!-- الخط -->
-
                             <div class="settings-row">
 
                                 <span>
@@ -812,8 +995,6 @@
                             </div>
 
 
-
-                            <!-- المحاذاة -->
 
                             <div class="settings-row">
 
@@ -871,7 +1052,7 @@
 
 
                 <!-- ==================================================
-                     عالم الرواية
+                     WORLD PLACEHOLDER
                 ================================================== -->
 
                 <section
@@ -879,37 +1060,61 @@
                     class="page"
                 >
 
-                    <h2 class="page-title">
-                        عالم الرواية
-                    </h2>
+                    <div class="section-heading">
+
+                        <div>
+
+                            <div class="section-eyebrow">
+                                THE WORLD
+                            </div>
+
+                            <h2 class="page-title">
+                                عالم الرواية
+                            </h2>
+
+                            <p class="page-subtitle">
+                                هذه المنطقة ستتحول إلى موسوعة عالم
+                                Broken Throne في المرحلة القادمة.
+                            </p>
+
+                        </div>
+
+                    </div>
 
 
                     <div class="world-grid">
 
-
                         <article class="world-card">
+
+                            <span class="world-card-number">
+                                01
+                            </span>
 
                             <h3>
                                 الشخصيات
                             </h3>
 
                             <p>
-                                تعريف بأبطال Broken Throne
-                                وأدوارهم في القصة.
+                                الشخصيات الرئيسية والثانوية،
+                                أدوارها وعلاقاتها داخل القصة.
                             </p>
 
                         </article>
 
 
                         <article class="world-card">
+
+                            <span class="world-card-number">
+                                02
+                            </span>
 
                             <h3>
                                 الممالك
                             </h3>
 
                             <p>
-                                خريطة الممالك والصراعات
-                                التي تدور بينها.
+                                الممالك والأراضي والقوى التي
+                                تشكل عالم الرواية.
                             </p>
 
                         </article>
@@ -917,17 +1122,20 @@
 
                         <article class="world-card">
 
+                            <span class="world-card-number">
+                                03
+                            </span>
+
                             <h3>
                                 الأحداث
                             </h3>
 
                             <p>
-                                الخط الزمني للأحداث الكبرى
-                                في العالم.
+                                الخط الزمني للأحداث المهمة
+                                والتغييرات التي تصنع العالم.
                             </p>
 
                         </article>
-
 
                     </div>
 
@@ -936,7 +1144,7 @@
 
 
                 <!-- ==================================================
-                     إعدادات الموقع
+                     SETTINGS
                 ================================================== -->
 
                 <section
@@ -944,21 +1152,46 @@
                     class="page"
                 >
 
-                    <h2 class="page-title">
-                        إعدادات الموقع
-                    </h2>
+                    <div class="section-heading">
+
+                        <div>
+
+                            <div class="section-eyebrow">
+                                CONTROL
+                            </div>
+
+                            <h2 class="page-title">
+                                إعدادات الموقع
+                            </h2>
+
+                            <p class="page-subtitle">
+                                خصّص تجربة الموقع بالطريقة التي تناسبك.
+                            </p>
+
+                        </div>
+
+                    </div>
 
 
                     <div class="site-settings">
 
 
-                        <!-- الحركة -->
+                        <!-- MOTION -->
 
                         <div class="settings-row">
 
-                            <span>
-                                التأثيرات الحركية
-                            </span>
+                            <div class="settings-label">
+
+                                <strong>
+                                    التأثيرات الحركية
+                                </strong>
+
+                                <small>
+                                    التحكم بالحركات والانتقالات
+                                    داخل الموقع.
+                                </small>
+
+                            </div>
 
 
                             <label class="switch">
@@ -976,13 +1209,21 @@
 
 
 
-                        <!-- خط الموقع -->
+                        <!-- SITE FONT -->
 
                         <div class="settings-row">
 
-                            <span>
-                                خط الموقع
-                            </span>
+                            <div class="settings-label">
+
+                                <strong>
+                                    خط الموقع
+                                </strong>
+
+                                <small>
+                                    الخط المستخدم في واجهة الموقع.
+                                </small>
+
+                            </div>
 
 
                             <div class="btn-group">
@@ -1016,13 +1257,69 @@
 
 
 
-                        <!-- الدخولية -->
+                        <!-- UI DENSITY -->
 
                         <div class="settings-row">
 
-                            <span>
-                                شاشة الدخول
-                            </span>
+                            <div class="settings-label">
+
+                                <strong>
+                                    كثافة الواجهة
+                                </strong>
+
+                                <small>
+                                    التحكم بمسافات وعرض عناصر الموقع.
+                                </small>
+
+                            </div>
+
+
+                            <div class="btn-group">
+
+                                <button
+                                    type="button"
+                                    data-ui-density="compact"
+                                >
+                                    مضغوط
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    data-ui-density="normal"
+                                >
+                                    عادي
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    data-ui-density="relaxed"
+                                >
+                                    واسع
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- SPLASH -->
+
+                        <div class="settings-row">
+
+                            <div class="settings-label">
+
+                                <strong>
+                                    شاشة الدخول
+                                </strong>
+
+                                <small>
+                                    إعادة تشغيل شاشة الدخول الآن.
+                                </small>
+
+                            </div>
 
 
                             <button
@@ -1037,13 +1334,22 @@
 
 
 
-                        <!-- إعادة الإعدادات -->
+                        <!-- RESET -->
 
                         <div class="settings-row">
 
-                            <span>
-                                إعادة الإعدادات
-                            </span>
+                            <div class="settings-label">
+
+                                <strong>
+                                    إعادة الإعدادات
+                                </strong>
+
+                                <small>
+                                    إعادة إعدادات الموقع والقارئ
+                                    إلى الوضع الافتراضي.
+                                </small>
+
+                            </div>
 
 
                             <button
@@ -1067,7 +1373,6 @@
         </main>
 
     </div>
-
 
 
     <script src="script.js"></script>
