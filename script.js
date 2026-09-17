@@ -2,14 +2,18 @@
 
 
 /* ==================================================
+   Broken Throne
+   Main Application
+================================================== */
+
+
+/* ==================================================
    STORAGE
 ================================================== */
 
 const STORAGE_KEY = "broken_throne_state";
 
 const DEFAULT_STATE = {
-
-    splashSeen: false,
 
     lastChapter: 1,
 
@@ -46,6 +50,7 @@ function loadState(){
             localStorage.getItem(STORAGE_KEY);
 
         if(!saved){
+
             return cloneDefaults();
         }
 
@@ -67,7 +72,12 @@ function loadState(){
 
         };
 
-    }catch{
+    }catch(error){
+
+        console.warn(
+            "تعذر تحميل الإعدادات:",
+            error
+        );
 
         return cloneDefaults();
     }
@@ -79,10 +89,20 @@ let state = loadState();
 
 function saveState(){
 
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(state)
-    );
+    try{
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(state)
+        );
+
+    }catch(error){
+
+        console.warn(
+            "تعذر حفظ الإعدادات:",
+            error
+        );
+    }
 }
 
 
@@ -99,17 +119,20 @@ const site =
 const enterBtn =
     document.getElementById("enterBtn");
 
+
 const navLinks =
     document.querySelectorAll(".nav-link");
 
 const pages =
     document.querySelectorAll(".page");
 
+
 const startReading =
     document.getElementById("startReading");
 
 const continueReading =
     document.getElementById("continueReading");
+
 
 const chaptersList =
     document.getElementById("chaptersList");
@@ -119,6 +142,7 @@ const chapterSearch =
 
 const chapterSearchBtn =
     document.getElementById("chapterSearchBtn");
+
 
 const showChapterIndex =
     document.getElementById("showChapterIndex");
@@ -131,6 +155,7 @@ const chapterIndex =
 
 const chapterGrid =
     document.getElementById("chapterGrid");
+
 
 const reader =
     document.getElementById("reader");
@@ -147,6 +172,7 @@ const readerChapterNumber =
 const readerProgressBar =
     document.getElementById("readerProgressBar");
 
+
 const backToChapters =
     document.getElementById("backToChapters");
 
@@ -155,6 +181,7 @@ const previousChapter =
 
 const nextChapter =
     document.getElementById("nextChapter");
+
 
 const readingSettingsBtn =
     document.getElementById("readingSettingsBtn");
@@ -168,6 +195,7 @@ const closeReadingSettings =
 const resetReaderSettings =
     document.getElementById("resetReaderSettings");
 
+
 const animationsToggle =
     document.getElementById("animationsToggle");
 
@@ -177,6 +205,7 @@ const replayIntro =
 const resetAllSettings =
     document.getElementById("resetAllSettings");
 
+
 const siteFontButtons =
     document.querySelectorAll("[data-site-font]");
 
@@ -185,6 +214,7 @@ const readerThemeButtons =
 
 const readerFontButtons =
     document.querySelectorAll("[data-reader-font]");
+
 
 const fontStepButtons =
     document.querySelectorAll("[data-font-step]");
@@ -204,6 +234,7 @@ const widthStepButtons =
 ================================================== */
 
 let chapterIndexData = [];
+
 let currentChapter = null;
 
 
@@ -221,11 +252,17 @@ function prefersReducedMotion(){
 
 function applyMotion(){
 
+    const disabled =
+        !state.animations ||
+        prefersReducedMotion();
+
     document.body.classList.toggle(
         "no-animations",
-        !state.animations ||
-        prefersReducedMotion()
+        disabled
     );
+
+    animationsToggle.checked =
+        state.animations;
 }
 
 
@@ -233,15 +270,20 @@ function applyMotion(){
    SPLASH
 ================================================== */
 
+/*
+   الدخولية لا يتم حفظ حالتها.
+   لذلك تظهر عند كل تحميل للموقع.
+*/
+
 function showSite(){
 
-    splash.classList.add("hidden");
+    splash.classList.add(
+        "hidden"
+    );
 
-    site.classList.remove("hidden");
-
-    state.splashSeen = true;
-
-    saveState();
+    site.classList.remove(
+        "hidden"
+    );
 }
 
 
@@ -252,7 +294,9 @@ function enterSite(){
         !prefersReducedMotion()
     ){
 
-        splash.classList.add("fade-out");
+        splash.classList.add(
+            "fade-out"
+        );
 
         setTimeout(
             showSite,
@@ -262,6 +306,7 @@ function enterSite(){
     }else{
 
         showSite();
+
     }
 }
 
@@ -272,22 +317,32 @@ enterBtn.addEventListener(
 );
 
 
+/* ==================================================
+   REPLAY SPLASH
+================================================== */
+
 replayIntro.addEventListener(
     "click",
     () => {
 
-        site.classList.add("hidden");
+        site.classList.add(
+            "hidden"
+        );
 
         splash.classList.remove(
             "hidden",
             "fade-out"
         );
 
-        state.splashSeen = false;
-
-        saveState();
-
         goToPage("home");
+
+        closeReader();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "auto"
+        });
+
     }
 );
 
@@ -302,8 +357,15 @@ function goToPage(target){
         document.getElementById(target);
 
     if(!targetPage){
+
+        console.warn(
+            "الصفحة غير موجودة:",
+            target
+        );
+
         return;
     }
+
 
     pages.forEach(
         page => {
@@ -316,6 +378,7 @@ function goToPage(target){
         }
     );
 
+
     navLinks.forEach(
         link => {
 
@@ -327,12 +390,18 @@ function goToPage(target){
         }
     );
 
+
     if(target !== "chapters"){
+
         closeReader();
+
     }
 
+
     window.scrollTo({
+
         top: 0,
+
         behavior:
             prefersReducedMotion()
                 ? "auto"
@@ -351,8 +420,10 @@ navLinks.forEach(
                 goToPage(
                     link.dataset.target
                 );
+
             }
         );
+
     }
 );
 
@@ -367,31 +438,60 @@ async function loadChapterIndex(){
 
         const response =
             await fetch(
-                "chapters/index.json"
+                "chapters/index.json",
+                {
+                    cache: "no-cache"
+                }
             );
 
+
         if(!response.ok){
+
             throw new Error(
-                "تعذر تحميل فهرس الفصول"
+                "تعذر تحميل فهرس الفصول."
             );
         }
 
+
         chapterIndexData =
             await response.json();
+
+
+        if(!Array.isArray(chapterIndexData)){
+
+            throw new Error(
+                "صيغة فهرس الفصول غير صحيحة."
+            );
+        }
+
+
+        chapterIndexData.sort(
+            (a, b) =>
+                Number(a.number) -
+                Number(b.number)
+        );
+
 
         renderChapterList();
 
         renderChapterGrid();
 
+
     }catch(error){
 
         console.error(error);
 
+
         chaptersList.innerHTML = `
+
             <li class="chapter-error">
+
                 تعذر تحميل قائمة الفصول.
+
             </li>
+
         `;
+
     }
 }
 
@@ -404,66 +504,94 @@ function renderChapterList(){
 
     chaptersList.innerHTML = "";
 
+
     chapterIndexData.forEach(
         chapter => {
 
             const li =
                 document.createElement("li");
 
+
             const button =
                 document.createElement("button");
+
 
             button.type = "button";
 
             button.className =
                 "chapter-item";
 
-            if(
-                Number(chapter.number) ===
-                Number(state.lastChapter)
-            ){
-
-                button.classList.add("current");
-            }
 
             button.dataset.chapter =
                 chapter.number;
 
-            const status =
+
+            const isCurrent =
                 Number(chapter.number) ===
-                Number(state.lastChapter)
+                Number(state.lastChapter);
+
+
+            if(isCurrent){
+
+                button.classList.add(
+                    "current"
+                );
+
+            }
+
+
+            const stateText =
+                isCurrent
                     ? "آخر فصل تمت قراءته"
                     : "فتح الفصل";
+
 
             button.innerHTML = `
 
                 <span class="chapter-num">
-                    ${String(chapter.number).padStart(2, "0")}
+
+                    ${String(
+                        chapter.number
+                    ).padStart(2, "0")}
+
                 </span>
+
 
                 <span class="chapter-info">
 
                     <span class="chapter-name">
-                        ${escapeHTML(chapter.title)}
+
+                        ${escapeHTML(
+                            chapter.title
+                        )}
+
                     </span>
 
+
                     <span class="chapter-state">
-                        ${status}
+
+                        ${stateText}
+
                     </span>
 
                 </span>
+
             `;
+
 
             button.addEventListener(
                 "click",
                 () => {
 
                     openChapter(
-                        Number(chapter.number)
+                        Number(
+                            chapter.number
+                        )
                     );
 
                 }
             );
+
 
             li.appendChild(button);
 
@@ -482,45 +610,60 @@ function renderChapterGrid(){
 
     chapterGrid.innerHTML = "";
 
+
     chapterIndexData.forEach(
         chapter => {
 
             const button =
                 document.createElement("button");
 
+
             button.type = "button";
 
-            button.textContent =
-                String(chapter.number)
-                    .padStart(2, "0");
 
-            if(
+            button.textContent =
+                String(
+                    chapter.number
+                ).padStart(2, "0");
+
+
+            const isCurrent =
                 Number(chapter.number) ===
-                Number(state.lastChapter)
-            ){
+                Number(state.lastChapter);
+
+
+            if(isCurrent){
 
                 button.classList.add(
                     "current"
                 );
+
             }
+
 
             button.addEventListener(
                 "click",
                 () => {
 
                     openChapter(
-                        Number(chapter.number)
+                        Number(
+                            chapter.number
+                        )
                     );
+
 
                     chapterIndex.classList.add(
                         "hidden"
                     );
+
                 }
             );
+
 
             chapterGrid.appendChild(
                 button
             );
+
         }
     );
 }
@@ -549,6 +692,7 @@ async function openChapter(number){
     const chapter =
         findChapter(number);
 
+
     if(!chapter){
 
         alert(
@@ -558,55 +702,82 @@ async function openChapter(number){
         return;
     }
 
+
     currentChapter =
         Number(chapter.number);
+
 
     state.lastChapter =
         currentChapter;
 
+
     saveState();
+
 
     chaptersList.classList.add(
         "hidden"
     );
 
+
     chapterIndex.classList.add(
         "hidden"
     );
+
 
     reader.classList.remove(
         "hidden"
     );
 
-    readerText.innerHTML =
-        `
-        <p>
-            جاري تحميل الفصل...
-        </p>
-        `;
+
+    readingSettingsPanel.classList.add(
+        "hidden"
+    );
+
 
     readerTitle.textContent =
         chapter.title;
 
-    readerChapterNumber.textContent =
-        `الفصل ${String(currentChapter).padStart(2, "0")}`;
 
-    await loadChapterFile(
-        chapter.file
-    );
+    readerChapterNumber.textContent =
+        `الفصل ${
+            String(
+                currentChapter
+            ).padStart(2, "0")
+        }`;
+
+
+    readerText.innerHTML = `
+
+        <p>
+            جاري تحميل الفصل...
+        </p>
+
+    `;
+
 
     updateChapterNavigation();
+
 
     renderChapterList();
 
     renderChapterGrid();
 
+
+    await loadChapterFile(
+        chapter.file
+    );
+
+
     applyReaderSettings();
+
 
     resetReaderProgress();
 
+
     window.scrollTo({
+
         top: 0,
+
         behavior:
             prefersReducedMotion()
                 ? "auto"
@@ -625,31 +796,43 @@ async function loadChapterFile(file){
 
         const response =
             await fetch(
-                `chapters/${file}`
+                `chapters/${file}`,
+                {
+                    cache: "no-cache"
+                }
             );
 
+
         if(!response.ok){
+
             throw new Error(
-                "تعذر تحميل الفصل"
+                `تعذر تحميل الفصل: ${file}`
             );
+
         }
+
 
         const html =
             await response.text();
 
+
         readerText.innerHTML =
             html;
 
-        readerText.scrollTop = 0;
 
     }catch(error){
 
         console.error(error);
 
+
         readerText.innerHTML = `
+
             <p>
+
                 تعذر تحميل محتوى هذا الفصل.
+
             </p>
+
         `;
     }
 }
@@ -665,28 +848,48 @@ function closeReader(){
         "hidden"
     );
 
+
     chaptersList.classList.remove(
         "hidden"
     );
+
 
     readingSettingsPanel.classList.add(
         "hidden"
     );
 
+
     chapterIndex.classList.add(
         "hidden"
     );
+
+
+    currentChapter = null;
 }
 
 
 backToChapters.addEventListener(
     "click",
-    closeReader
+    () => {
+
+        closeReader();
+
+        window.scrollTo({
+
+            top: 0,
+
+            behavior:
+                prefersReducedMotion()
+                    ? "auto"
+                    : "smooth"
+        });
+
+    }
 );
 
 
 /* ==================================================
-   NEXT / PREVIOUS
+   CHAPTER NAVIGATION
 ================================================== */
 
 function updateChapterNavigation(){
@@ -698,24 +901,35 @@ function updateChapterNavigation(){
                 Number(currentChapter)
         );
 
+
     const hasPrevious =
         currentIndex > 0;
 
+
     const hasNext =
+        currentIndex >= 0 &&
         currentIndex <
         chapterIndexData.length - 1;
+
 
     previousChapter.disabled =
         !hasPrevious;
 
+
     nextChapter.disabled =
         !hasNext;
 
+
     previousChapter.style.opacity =
-        hasPrevious ? "1" : "0.4";
+        hasPrevious
+            ? "1"
+            : "0.4";
+
 
     nextChapter.style.opacity =
-        hasNext ? "1" : "0.4";
+        hasNext
+            ? "1"
+            : "0.4";
 }
 
 
@@ -723,21 +937,31 @@ previousChapter.addEventListener(
     "click",
     () => {
 
-        const index =
+        if(currentChapter === null){
+            return;
+        }
+
+
+        const currentIndex =
             chapterIndexData.findIndex(
                 chapter =>
                     Number(chapter.number) ===
                     Number(currentChapter)
             );
 
-        if(index > 0){
+
+        if(currentIndex > 0){
 
             openChapter(
                 Number(
-                    chapterIndexData[index - 1].number
+                    chapterIndexData[
+                        currentIndex - 1
+                    ].number
                 )
             );
+
         }
+
     }
 );
 
@@ -746,44 +970,90 @@ nextChapter.addEventListener(
     "click",
     () => {
 
-        const index =
+        if(currentChapter === null){
+            return;
+        }
+
+
+        const currentIndex =
             chapterIndexData.findIndex(
                 chapter =>
                     Number(chapter.number) ===
                     Number(currentChapter)
             );
 
+
         if(
-            index >= 0 &&
-            index < chapterIndexData.length - 1
+            currentIndex >= 0 &&
+            currentIndex <
+            chapterIndexData.length - 1
         ){
 
             openChapter(
                 Number(
-                    chapterIndexData[index + 1].number
+                    chapterIndexData[
+                        currentIndex + 1
+                    ].number
                 )
             );
+
         }
+
     }
 );
 
 
 /* ==================================================
-   QUICK SEARCH
+   CHAPTER SEARCH
 ================================================== */
 
 function searchChapter(){
 
-    const number =
-        Number(
-            chapterSearch.value.trim()
-        );
+    const value =
+        chapterSearch.value.trim();
 
-    if(!number){
+
+    if(!value){
+
+        chapterSearch.focus();
+
         return;
     }
 
+
+    const number =
+        Number(value);
+
+
+    if(
+        !Number.isInteger(number) ||
+        number < 1
+    ){
+
+        alert(
+            "اكتب رقم فصل صحيح."
+        );
+
+        return;
+    }
+
+
+    const chapter =
+        findChapter(number);
+
+
+    if(!chapter){
+
+        alert(
+            `الفصل ${number} غير موجود.`
+        );
+
+        return;
+    }
+
+
     openChapter(number);
+
 
     chapterSearch.value = "";
 }
@@ -800,14 +1070,17 @@ chapterSearch.addEventListener(
     event => {
 
         if(event.key === "Enter"){
+
             searchChapter();
+
         }
+
     }
 );
 
 
 /* ==================================================
-   CHAPTER INDEX PANEL
+   CHAPTER INDEX
 ================================================== */
 
 showChapterIndex.addEventListener(
@@ -817,6 +1090,7 @@ showChapterIndex.addEventListener(
         chapterIndex.classList.toggle(
             "hidden"
         );
+
     }
 );
 
@@ -828,12 +1102,13 @@ closeChapterIndex.addEventListener(
         chapterIndex.classList.add(
             "hidden"
         );
+
     }
 );
 
 
 /* ==================================================
-   HOME BUTTONS
+   HOME
 ================================================== */
 
 startReading.addEventListener(
@@ -842,15 +1117,17 @@ startReading.addEventListener(
 
         goToPage("chapters");
 
-        const first =
-            chapterIndexData[0];
 
-        if(first){
+        if(chapterIndexData.length){
 
             openChapter(
-                Number(first.number)
+                Number(
+                    chapterIndexData[0].number
+                )
             );
+
         }
+
     }
 );
 
@@ -861,24 +1138,46 @@ continueReading.addEventListener(
 
         goToPage("chapters");
 
-        openChapter(
-            Number(state.lastChapter || 1)
-        );
+
+        if(chapterIndexData.length){
+
+            const savedChapter =
+                findChapter(
+                    Number(
+                        state.lastChapter
+                    )
+                );
+
+
+            openChapter(
+                savedChapter
+                    ? Number(savedChapter.number)
+                    : Number(
+                        chapterIndexData[0].number
+                    )
+            );
+
+        }
+
     }
 );
 
 
 /* ==================================================
-   READING SETTINGS PANEL
+   READER SETTINGS PANEL
 ================================================== */
 
 readingSettingsBtn.addEventListener(
     "click",
-    () => {
+    event => {
+
+        event.stopPropagation();
+
 
         readingSettingsPanel.classList.toggle(
             "hidden"
         );
+
     }
 );
 
@@ -890,85 +1189,52 @@ closeReadingSettings.addEventListener(
         readingSettingsPanel.classList.add(
             "hidden"
         );
+
     }
 );
 
 
 /* ==================================================
-   APPLY READER SETTINGS
+   CLOSE PANELS OUTSIDE
 ================================================== */
 
-function applyReaderSettings(){
+document.addEventListener(
+    "click",
+    event => {
 
-    document.documentElement.style.setProperty(
-        "--reader-size",
-        `${state.reader.fontSize}rem`
-    );
+        if(
+            !readingSettingsPanel.classList.contains(
+                "hidden"
+            ) &&
+            !readingSettingsPanel.contains(event.target) &&
+            event.target !== readingSettingsBtn
+        ){
 
-    document.documentElement.style.setProperty(
-        "--reader-line",
-        state.reader.lineHeight
-    );
-
-    document.documentElement.style.setProperty(
-        "--reader-paragraph",
-        `${state.reader.paragraphSpacing}px`
-    );
-
-    document.documentElement.style.setProperty(
-        "--reader-width",
-        `${state.reader.width}ch`
-    );
-
-
-    readerText.classList.remove(
-        "theme-dark",
-        "theme-sepia",
-        "theme-light"
-    );
-
-    readerText.classList.add(
-        `theme-${state.reader.theme}`
-    );
-
-
-    readerText.classList.remove(
-        "font-cairo",
-        "font-ruqaa"
-    );
-
-    readerText.classList.add(
-        `font-${state.reader.font}`
-    );
-
-
-    readerThemeButtons.forEach(
-        button => {
-
-            button.classList.toggle(
-                "active",
-                button.dataset.readerTheme ===
-                state.reader.theme
+            readingSettingsPanel.classList.add(
+                "hidden"
             );
         }
-    );
 
 
-    readerFontButtons.forEach(
-        button => {
+        if(
+            !chapterIndex.classList.contains(
+                "hidden"
+            ) &&
+            !chapterIndex.contains(event.target) &&
+            event.target !== showChapterIndex
+        ){
 
-            button.classList.toggle(
-                "active",
-                button.dataset.readerFont ===
-                state.reader.font
+            chapterIndex.classList.add(
+                "hidden"
             );
         }
-    );
-}
+
+    }
+);
 
 
 /* ==================================================
-   FONT SIZE
+   READER FONT SIZE
 ================================================== */
 
 fontStepButtons.forEach(
@@ -982,6 +1248,7 @@ fontStepButtons.forEach(
                     Number(
                         button.dataset.fontStep
                     );
+
 
                 state.reader.fontSize =
                     Math.min(
@@ -997,17 +1264,20 @@ fontStepButtons.forEach(
                         )
                     );
 
+
                 saveState();
 
                 applyReaderSettings();
+
             }
         );
+
     }
 );
 
 
 /* ==================================================
-   LINE HEIGHT
+   READER LINE HEIGHT
 ================================================== */
 
 lineStepButtons.forEach(
@@ -1021,6 +1291,7 @@ lineStepButtons.forEach(
                     Number(
                         button.dataset.lineStep
                     );
+
 
                 state.reader.lineHeight =
                     Math.min(
@@ -1036,11 +1307,14 @@ lineStepButtons.forEach(
                         )
                     );
 
+
                 saveState();
 
                 applyReaderSettings();
+
             }
         );
+
     }
 );
 
@@ -1061,6 +1335,7 @@ paragraphStepButtons.forEach(
                         button.dataset.paragraphStep
                     );
 
+
                 state.reader.paragraphSpacing =
                     Math.min(
                         60,
@@ -1071,11 +1346,14 @@ paragraphStepButtons.forEach(
                         )
                     );
 
+
                 saveState();
 
                 applyReaderSettings();
+
             }
         );
+
     }
 );
 
@@ -1096,6 +1374,7 @@ widthStepButtons.forEach(
                         button.dataset.widthStep
                     );
 
+
                 state.reader.width =
                     Math.min(
                         95,
@@ -1106,11 +1385,14 @@ widthStepButtons.forEach(
                         )
                     );
 
+
                 saveState();
 
                 applyReaderSettings();
+
             }
         );
+
     }
 );
 
@@ -1129,11 +1411,14 @@ readerThemeButtons.forEach(
                 state.reader.theme =
                     button.dataset.readerTheme;
 
+
                 saveState();
 
                 applyReaderSettings();
+
             }
         );
+
     }
 );
 
@@ -1152,13 +1437,97 @@ readerFontButtons.forEach(
                 state.reader.font =
                     button.dataset.readerFont;
 
+
                 saveState();
 
                 applyReaderSettings();
+
             }
         );
+
     }
 );
+
+
+/* ==================================================
+   APPLY READER SETTINGS
+================================================== */
+
+function applyReaderSettings(){
+
+    document.documentElement.style.setProperty(
+        "--reader-size",
+        `${state.reader.fontSize}rem`
+    );
+
+
+    document.documentElement.style.setProperty(
+        "--reader-line",
+        state.reader.lineHeight
+    );
+
+
+    document.documentElement.style.setProperty(
+        "--reader-paragraph",
+        `${state.reader.paragraphSpacing}px`
+    );
+
+
+    document.documentElement.style.setProperty(
+        "--reader-width",
+        `${state.reader.width}ch`
+    );
+
+
+    readerText.classList.remove(
+        "theme-dark",
+        "theme-sepia",
+        "theme-light"
+    );
+
+
+    readerText.classList.add(
+        `theme-${state.reader.theme}`
+    );
+
+
+    readerText.classList.remove(
+        "font-cairo",
+        "font-ruqaa"
+    );
+
+
+    readerText.classList.add(
+        `font-${state.reader.font}`
+    );
+
+
+    readerThemeButtons.forEach(
+        button => {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.readerTheme ===
+                state.reader.theme
+            );
+
+        }
+    );
+
+
+    readerFontButtons.forEach(
+        button => {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.readerFont ===
+                state.reader.font
+            );
+
+        }
+    );
+
+}
 
 
 /* ==================================================
@@ -1172,9 +1541,11 @@ resetReaderSettings.addEventListener(
         state.reader =
             cloneDefaults().reader;
 
+
         saveState();
 
         applyReaderSettings();
+
     }
 );
 
@@ -1185,7 +1556,7 @@ resetReaderSettings.addEventListener(
 
 function applySiteFont(){
 
-    document.body.style.fontFamily = {
+    const fonts = {
 
         cairo:
             '"Cairo", sans-serif',
@@ -1196,7 +1567,13 @@ function applySiteFont(){
         kufi:
             '"Noto Kufi Arabic", sans-serif'
 
-    }[state.siteFont];
+    };
+
+
+    document.body.style.fontFamily =
+        fonts[state.siteFont] ||
+        fonts.cairo;
+
 
     siteFontButtons.forEach(
         button => {
@@ -1206,6 +1583,7 @@ function applySiteFont(){
                 button.dataset.siteFont ===
                 state.siteFont
             );
+
         }
     );
 }
@@ -1221,11 +1599,14 @@ siteFontButtons.forEach(
                 state.siteFont =
                     button.dataset.siteFont;
 
+
                 saveState();
 
                 applySiteFont();
+
             }
         );
+
     }
 );
 
@@ -1241,15 +1622,17 @@ animationsToggle.addEventListener(
         state.animations =
             animationsToggle.checked;
 
+
         saveState();
 
         applyMotion();
+
     }
 );
 
 
 /* ==================================================
-   RESET ALL SETTINGS
+   RESET ALL
 ================================================== */
 
 resetAllSettings.addEventListener(
@@ -1257,29 +1640,46 @@ resetAllSettings.addEventListener(
     () => {
 
         const confirmed =
-            confirm(
+            window.confirm(
                 "هل تريد إعادة جميع إعدادات الموقع والقراءة؟"
             );
+
 
         if(!confirmed){
             return;
         }
 
-        localStorage.removeItem(
-            STORAGE_KEY
-        );
+
+        const currentChapterSaved =
+            state.lastChapter;
+
 
         state =
             cloneDefaults();
 
-        animationsToggle.checked =
-            state.animations;
+
+        /*
+           نحتفظ بآخر فصل.
+           إعادة الإعدادات لا يجب أن ترجع
+           المستخدم للفصل الأول.
+        */
+
+        state.lastChapter =
+            currentChapterSaved;
+
+
+        saveState();
+
 
         applyMotion();
+
         applySiteFont();
+
         applyReaderSettings();
 
+
         renderChapterList();
+
         renderChapterGrid();
 
     }
@@ -1287,45 +1687,69 @@ resetAllSettings.addEventListener(
 
 
 /* ==================================================
-   READING PROGRESS
+   READER PROGRESS
 ================================================== */
 
 function updateReaderProgress(){
 
-    if(reader.classList.contains("hidden")){
+    if(
+        reader.classList.contains(
+            "hidden"
+        )
+    ){
+
+        readerProgressBar.style.width =
+            "0%";
+
         return;
     }
 
-    const scrollTop =
-        window.scrollY;
 
     const readerTop =
-        readerText.offsetTop;
+        readerText.getBoundingClientRect().top +
+        window.scrollY;
+
 
     const readerHeight =
         readerText.offsetHeight;
 
-    const viewport =
+
+    const viewportHeight =
         window.innerHeight;
+
 
     const total =
         readerTop +
         readerHeight -
-        viewport;
+        viewportHeight;
+
 
     const current =
+        window.scrollY;
+
+
+    let percent = 0;
+
+
+    if(total > 0){
+
+        percent =
+            ((current - readerTop) /
+            (readerHeight - viewportHeight)) *
+            100;
+
+    }
+
+
+    percent =
         Math.max(
             0,
-            scrollTop - readerTop
+            Math.min(
+                100,
+                percent
+            )
         );
 
-    const percent =
-        total > 0
-            ? Math.min(
-                100,
-                (current / total) * 100
-            )
-            : 0;
 
     readerProgressBar.style.width =
         `${percent}%`;
@@ -1335,8 +1759,21 @@ function updateReaderProgress(){
 window.addEventListener(
     "scroll",
     updateReaderProgress,
-    { passive: true }
+    {
+        passive: true
+    }
 );
+
+
+/* ==================================================
+   RESET READER PROGRESS
+================================================== */
+
+function resetReaderProgress(){
+
+    readerProgressBar.style.width =
+        "0%";
+}
 
 
 /* ==================================================
@@ -1351,29 +1788,52 @@ document.addEventListener(
             return;
         }
 
+
         readingSettingsPanel.classList.add(
             "hidden"
         );
 
+
         chapterIndex.classList.add(
             "hidden"
         );
+
     }
 );
 
 
 /* ==================================================
-   BASIC HTML ESCAPE
+   HTML ESCAPE
 ================================================== */
 
 function escapeHTML(value){
 
     return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
 }
 
 
@@ -1383,27 +1843,33 @@ function escapeHTML(value){
 
 async function initialize(){
 
+    /*
+       الدخولية تظهر دائمًا عند فتح الموقع.
+    */
+
+    splash.classList.remove(
+        "hidden"
+    );
+
+
+    site.classList.add(
+        "hidden"
+    );
+
+
     animationsToggle.checked =
         state.animations;
 
+
     applyMotion();
+
     applySiteFont();
+
     applyReaderSettings();
 
-    if(state.splashSeen){
-
-        splash.classList.add("hidden");
-
-        site.classList.remove("hidden");
-
-    }else{
-
-        splash.classList.remove("hidden");
-
-        site.classList.add("hidden");
-    }
 
     await loadChapterIndex();
+
 
     goToPage("home");
 }
