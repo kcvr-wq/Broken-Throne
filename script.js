@@ -11,7 +11,9 @@
    STORAGE
 ================================================== */
 
-const STORAGE_KEY = "broken_throne_state";
+const STORAGE_KEY =
+    "broken_throne_state";
+
 
 const DEFAULT_STATE = {
 
@@ -21,15 +23,23 @@ const DEFAULT_STATE = {
 
     siteFont: "cairo",
 
+    readerProgress: {},
+
     reader: {
 
         fontSize: 1.15,
+
         lineHeight: 2.1,
+
         paragraphSpacing: 30,
+
         width: 78,
 
         theme: "dark",
-        font: "cairo"
+
+        font: "cairo",
+
+        align: "justify"
     }
 };
 
@@ -37,7 +47,9 @@ const DEFAULT_STATE = {
 function cloneDefaults(){
 
     return JSON.parse(
-        JSON.stringify(DEFAULT_STATE)
+        JSON.stringify(
+            DEFAULT_STATE
+        )
     );
 }
 
@@ -47,21 +59,32 @@ function loadState(){
     try{
 
         const saved =
-            localStorage.getItem(STORAGE_KEY);
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
 
         if(!saved){
 
             return cloneDefaults();
         }
 
+
         const parsed =
             JSON.parse(saved);
+
 
         return {
 
             ...cloneDefaults(),
 
             ...parsed,
+
+            readerProgress:
+                parsed.readerProgress &&
+                typeof parsed.readerProgress === "object"
+                    ? parsed.readerProgress
+                    : {},
 
             reader: {
 
@@ -79,12 +102,14 @@ function loadState(){
             error
         );
 
+
         return cloneDefaults();
     }
 }
 
 
-let state = loadState();
+let state =
+    loadState();
 
 
 function saveState(){
@@ -133,6 +158,16 @@ const startReading =
 const continueReading =
     document.getElementById("continueReading");
 
+const homeContinueBtn =
+    document.getElementById("homeContinueBtn");
+
+
+const lastReadingTitle =
+    document.getElementById("lastReadingTitle");
+
+const lastReadingMeta =
+    document.getElementById("lastReadingMeta");
+
 
 const chaptersList =
     document.getElementById("chaptersList");
@@ -142,6 +177,12 @@ const chapterSearch =
 
 const chapterSearchBtn =
     document.getElementById("chapterSearchBtn");
+
+const chapterCount =
+    document.getElementById("chapterCount");
+
+const lastChapterLabel =
+    document.getElementById("lastChapterLabel");
 
 
 const showChapterIndex =
@@ -170,63 +211,104 @@ const readerChapterNumber =
     document.getElementById("readerChapterNumber");
 
 const readerProgressBar =
-    document.getElementById("readerProgressBar");
+    document.getElementById(
+        "readerProgressBar"
+    );
 
 
 const backToChapters =
-    document.getElementById("backToChapters");
+    document.getElementById(
+        "backToChapters"
+    );
 
 const previousChapter =
-    document.getElementById("previousChapter");
+    document.getElementById(
+        "previousChapter"
+    );
 
 const nextChapter =
-    document.getElementById("nextChapter");
+    document.getElementById(
+        "nextChapter"
+    );
 
 
 const readingSettingsBtn =
-    document.getElementById("readingSettingsBtn");
+    document.getElementById(
+        "readingSettingsBtn"
+    );
 
 const readingSettingsPanel =
-    document.getElementById("readingSettingsPanel");
+    document.getElementById(
+        "readingSettingsPanel"
+    );
 
 const closeReadingSettings =
-    document.getElementById("closeReadingSettings");
+    document.getElementById(
+        "closeReadingSettings"
+    );
 
 const resetReaderSettings =
-    document.getElementById("resetReaderSettings");
+    document.getElementById(
+        "resetReaderSettings"
+    );
 
 
 const animationsToggle =
-    document.getElementById("animationsToggle");
+    document.getElementById(
+        "animationsToggle"
+    );
 
 const replayIntro =
-    document.getElementById("replayIntro");
+    document.getElementById(
+        "replayIntro"
+    );
 
 const resetAllSettings =
-    document.getElementById("resetAllSettings");
+    document.getElementById(
+        "resetAllSettings"
+    );
 
 
 const siteFontButtons =
-    document.querySelectorAll("[data-site-font]");
+    document.querySelectorAll(
+        "[data-site-font]"
+    );
 
 const readerThemeButtons =
-    document.querySelectorAll("[data-reader-theme]");
+    document.querySelectorAll(
+        "[data-reader-theme]"
+    );
 
 const readerFontButtons =
-    document.querySelectorAll("[data-reader-font]");
+    document.querySelectorAll(
+        "[data-reader-font]"
+    );
+
+const readerAlignButtons =
+    document.querySelectorAll(
+        "[data-reader-align]"
+    );
 
 
 const fontStepButtons =
-    document.querySelectorAll("[data-font-step]");
+    document.querySelectorAll(
+        "[data-font-step]"
+    );
 
 const lineStepButtons =
-    document.querySelectorAll("[data-line-step]");
+    document.querySelectorAll(
+        "[data-line-step]"
+    );
 
 const paragraphStepButtons =
-    document.querySelectorAll("[data-paragraph-step]");
+    document.querySelectorAll(
+        "[data-paragraph-step]"
+    );
 
 const widthStepButtons =
-    document.querySelectorAll("[data-width-step]");
+    document.querySelectorAll(
+        "[data-width-step]"
+    );
 
 
 /* ==================================================
@@ -236,6 +318,8 @@ const widthStepButtons =
 let chapterIndexData = [];
 
 let currentChapter = null;
+
+let readerSaveTimer = null;
 
 
 /* ==================================================
@@ -256,10 +340,12 @@ function applyMotion(){
         !state.animations ||
         prefersReducedMotion();
 
+
     document.body.classList.toggle(
         "no-animations",
         disabled
     );
+
 
     animationsToggle.checked =
         state.animations;
@@ -269,11 +355,6 @@ function applyMotion(){
 /* ==================================================
    SPLASH
 ================================================== */
-
-/*
-   الدخولية لا يتم حفظ حالتها.
-   لذلك تظهر عند كل تحميل للموقع.
-*/
 
 function showSite(){
 
@@ -298,7 +379,8 @@ function enterSite(){
             "fade-out"
         );
 
-        setTimeout(
+
+        window.setTimeout(
             showSite,
             800
         );
@@ -306,7 +388,6 @@ function enterSite(){
     }else{
 
         showSite();
-
     }
 }
 
@@ -325,21 +406,29 @@ replayIntro.addEventListener(
     "click",
     () => {
 
+        closeReader();
+
+
         site.classList.add(
             "hidden"
         );
+
 
         splash.classList.remove(
             "hidden",
             "fade-out"
         );
 
-        goToPage("home");
 
-        closeReader();
+        goToPage(
+            "home"
+        );
+
 
         window.scrollTo({
+
             top: 0,
+
             behavior: "auto"
         });
 
@@ -354,7 +443,10 @@ replayIntro.addEventListener(
 function goToPage(target){
 
     const targetPage =
-        document.getElementById(target);
+        document.getElementById(
+            target
+        );
+
 
     if(!targetPage){
 
@@ -394,7 +486,6 @@ function goToPage(target){
     if(target !== "chapters"){
 
         closeReader();
-
     }
 
 
@@ -453,11 +544,11 @@ async function loadChapterIndex(){
         }
 
 
-        chapterIndexData =
+        const data =
             await response.json();
 
 
-        if(!Array.isArray(chapterIndexData)){
+        if(!Array.isArray(data)){
 
             throw new Error(
                 "صيغة فهرس الفصول غير صحيحة."
@@ -465,17 +556,33 @@ async function loadChapterIndex(){
         }
 
 
-        chapterIndexData.sort(
-            (a, b) =>
-                Number(a.number) -
-                Number(b.number)
-        );
+        chapterIndexData =
+            data
+                .filter(
+                    chapter =>
+                        chapter &&
+                        Number.isInteger(
+                            Number(chapter.number)
+                        ) &&
+                        chapter.title &&
+                        chapter.file
+                )
+                .sort(
+                    (a, b) =>
+                        Number(a.number) -
+                        Number(b.number)
+                );
+
+
+        chapterCount.textContent =
+            `${chapterIndexData.length} فصل`;
 
 
         renderChapterList();
 
         renderChapterGrid();
 
+        updateHomeReadingInfo();
 
     }catch(error){
 
@@ -492,7 +599,23 @@ async function loadChapterIndex(){
 
         `;
 
+        chapterCount.textContent =
+            "تعذر تحميل الفصول";
     }
+}
+
+
+/* ==================================================
+   FIND CHAPTER
+================================================== */
+
+function findChapter(number){
+
+    return chapterIndexData.find(
+        chapter =>
+            Number(chapter.number) ===
+            Number(number)
+    );
 }
 
 
@@ -509,11 +632,15 @@ function renderChapterList(){
         chapter => {
 
             const li =
-                document.createElement("li");
+                document.createElement(
+                    "li"
+                );
 
 
             const button =
-                document.createElement("button");
+                document.createElement(
+                    "button"
+                );
 
 
             button.type = "button";
@@ -536,42 +663,44 @@ function renderChapterList(){
                 button.classList.add(
                     "current"
                 );
-
             }
+
+
+            const hasProgress =
+                Object.prototype.hasOwnProperty.call(
+                    state.readerProgress,
+                    chapter.number
+                );
 
 
             const stateText =
                 isCurrent
-                    ? "آخر فصل تمت قراءته"
-                    : "فتح الفصل";
+                    ? "آخر فصل تمت زيارته"
+                    : hasProgress
+                        ? "تمت القراءة جزئيًا"
+                        : "فتح الفصل";
 
 
             button.innerHTML = `
 
                 <span class="chapter-num">
-
                     ${String(
                         chapter.number
                     ).padStart(2, "0")}
-
                 </span>
 
 
                 <span class="chapter-info">
 
                     <span class="chapter-name">
-
                         ${escapeHTML(
                             chapter.title
                         )}
-
                     </span>
 
 
                     <span class="chapter-state">
-
                         ${stateText}
-
                     </span>
 
                 </span>
@@ -593,9 +722,14 @@ function renderChapterList(){
             );
 
 
-            li.appendChild(button);
+            li.appendChild(
+                button
+            );
 
-            chaptersList.appendChild(li);
+
+            chaptersList.appendChild(
+                li
+            );
 
         }
     );
@@ -615,7 +749,9 @@ function renderChapterGrid(){
         chapter => {
 
             const button =
-                document.createElement("button");
+                document.createElement(
+                    "button"
+                );
 
 
             button.type = "button";
@@ -624,21 +760,25 @@ function renderChapterGrid(){
             button.textContent =
                 String(
                     chapter.number
-                ).padStart(2, "0");
+                ).padStart(
+                    2,
+                    "0"
+                );
 
 
-            const isCurrent =
+            if(
                 Number(chapter.number) ===
-                Number(state.lastChapter);
-
-
-            if(isCurrent){
+                Number(state.lastChapter)
+            ){
 
                 button.classList.add(
                     "current"
                 );
-
             }
+
+
+            button.title =
+                chapter.title;
 
 
             button.addEventListener(
@@ -670,20 +810,6 @@ function renderChapterGrid(){
 
 
 /* ==================================================
-   FIND CHAPTER
-================================================== */
-
-function findChapter(number){
-
-    return chapterIndexData.find(
-        chapter =>
-            Number(chapter.number) ===
-            Number(number)
-    );
-}
-
-
-/* ==================================================
    OPEN CHAPTER
 ================================================== */
 
@@ -704,7 +830,9 @@ async function openChapter(number){
 
 
     currentChapter =
-        Number(chapter.number);
+        Number(
+            chapter.number
+        );
 
 
     state.lastChapter =
@@ -742,7 +870,10 @@ async function openChapter(number){
         `الفصل ${
             String(
                 currentChapter
-            ).padStart(2, "0")
+            ).padStart(
+                2,
+                "0"
+            )
         }`;
 
 
@@ -771,18 +902,8 @@ async function openChapter(number){
     applyReaderSettings();
 
 
-    resetReaderProgress();
+    restoreReaderProgress();
 
-
-    window.scrollTo({
-
-        top: 0,
-
-        behavior:
-            prefersReducedMotion()
-                ? "auto"
-                : "smooth"
-    });
 }
 
 
@@ -808,7 +929,6 @@ async function loadChapterFile(file){
             throw new Error(
                 `تعذر تحميل الفصل: ${file}`
             );
-
         }
 
 
@@ -822,15 +942,15 @@ async function loadChapterFile(file){
 
     }catch(error){
 
-        console.error(error);
+        console.error(
+            error
+        );
 
 
         readerText.innerHTML = `
 
             <p>
-
                 تعذر تحميل محتوى هذا الفصل.
-
             </p>
 
         `;
@@ -843,6 +963,9 @@ async function loadChapterFile(file){
 ================================================== */
 
 function closeReader(){
+
+    saveReaderProgress();
+
 
     reader.classList.add(
         "hidden"
@@ -865,6 +988,10 @@ function closeReader(){
 
 
     currentChapter = null;
+
+
+    readerProgressBar.style.width =
+        "0%";
 }
 
 
@@ -873,6 +1000,7 @@ backToChapters.addEventListener(
     () => {
 
         closeReader();
+
 
         window.scrollTo({
 
@@ -894,7 +1022,7 @@ backToChapters.addEventListener(
 
 function updateChapterNavigation(){
 
-    const currentIndex =
+    const index =
         chapterIndexData.findIndex(
             chapter =>
                 Number(chapter.number) ===
@@ -903,12 +1031,12 @@ function updateChapterNavigation(){
 
 
     const hasPrevious =
-        currentIndex > 0;
+        index > 0;
 
 
     const hasNext =
-        currentIndex >= 0 &&
-        currentIndex <
+        index >= 0 &&
+        index <
         chapterIndexData.length - 1;
 
 
@@ -918,18 +1046,6 @@ function updateChapterNavigation(){
 
     nextChapter.disabled =
         !hasNext;
-
-
-    previousChapter.style.opacity =
-        hasPrevious
-            ? "1"
-            : "0.4";
-
-
-    nextChapter.style.opacity =
-        hasNext
-            ? "1"
-            : "0.4";
 }
 
 
@@ -942,7 +1058,10 @@ previousChapter.addEventListener(
         }
 
 
-        const currentIndex =
+        saveReaderProgress();
+
+
+        const index =
             chapterIndexData.findIndex(
                 chapter =>
                     Number(chapter.number) ===
@@ -950,12 +1069,12 @@ previousChapter.addEventListener(
             );
 
 
-        if(currentIndex > 0){
+        if(index > 0){
 
             openChapter(
                 Number(
                     chapterIndexData[
-                        currentIndex - 1
+                        index - 1
                     ].number
                 )
             );
@@ -975,7 +1094,10 @@ nextChapter.addEventListener(
         }
 
 
-        const currentIndex =
+        saveReaderProgress();
+
+
+        const index =
             chapterIndexData.findIndex(
                 chapter =>
                     Number(chapter.number) ===
@@ -984,15 +1106,15 @@ nextChapter.addEventListener(
 
 
         if(
-            currentIndex >= 0 &&
-            currentIndex <
+            index >= 0 &&
+            index <
             chapterIndexData.length - 1
         ){
 
             openChapter(
                 Number(
                     chapterIndexData[
-                        currentIndex + 1
+                        index + 1
                     ].number
                 )
             );
@@ -1004,16 +1126,18 @@ nextChapter.addEventListener(
 
 
 /* ==================================================
-   CHAPTER SEARCH
+   SEARCH
 ================================================== */
 
 function searchChapter(){
 
-    const value =
-        chapterSearch.value.trim();
+    const query =
+        chapterSearch.value
+            .trim()
+            .toLowerCase();
 
 
-    if(!value){
+    if(!query){
 
         chapterSearch.focus();
 
@@ -1021,41 +1145,57 @@ function searchChapter(){
     }
 
 
-    const number =
-        Number(value);
+    const numericQuery =
+        Number(query);
+
+
+    let chapter = null;
 
 
     if(
-        !Number.isInteger(number) ||
-        number < 1
+        Number.isInteger(
+            numericQuery
+        ) &&
+        numericQuery > 0
     ){
 
-        alert(
-            "اكتب رقم فصل صحيح."
-        );
-
-        return;
+        chapter =
+            findChapter(
+                numericQuery
+            );
     }
 
 
-    const chapter =
-        findChapter(number);
+    if(!chapter){
+
+        chapter =
+            chapterIndexData.find(
+                item =>
+                    String(
+                        item.title
+                    )
+                    .toLowerCase()
+                    .includes(query)
+            );
+    }
 
 
     if(!chapter){
 
         alert(
-            `الفصل ${number} غير موجود.`
+            "لم يتم العثور على الفصل."
         );
 
         return;
     }
 
 
-    openChapter(number);
-
-
     chapterSearch.value = "";
+
+
+    openChapter(
+        Number(chapter.number)
+    );
 }
 
 
@@ -1072,7 +1212,6 @@ chapterSearch.addEventListener(
         if(event.key === "Enter"){
 
             searchChapter();
-
         }
 
     }
@@ -1085,7 +1224,10 @@ chapterSearch.addEventListener(
 
 showChapterIndex.addEventListener(
     "click",
-    () => {
+    event => {
+
+        event.stopPropagation();
+
 
         chapterIndex.classList.toggle(
             "hidden"
@@ -1108,14 +1250,96 @@ closeChapterIndex.addEventListener(
 
 
 /* ==================================================
-   HOME
+   HOME READING INFO
+================================================== */
+
+function updateHomeReadingInfo(){
+
+    if(
+        !state.lastChapter ||
+        !chapterIndexData.length
+    ){
+
+        lastReadingTitle.textContent =
+            "لم تبدأ القراءة بعد";
+
+
+        lastReadingMeta.textContent =
+            "ابدأ الرواية من الفصل الأول";
+
+
+        lastChapterLabel.textContent =
+            "آخر قراءة: —";
+
+
+        return;
+    }
+
+
+    const chapter =
+        findChapter(
+            Number(
+                state.lastChapter
+            )
+        );
+
+
+    if(!chapter){
+
+        lastReadingTitle.textContent =
+            "لم تبدأ القراءة بعد";
+
+
+        lastReadingMeta.textContent =
+            "ابدأ الرواية من الفصل الأول";
+
+
+        lastChapterLabel.textContent =
+            "آخر قراءة: —";
+
+
+        return;
+    }
+
+
+    lastReadingTitle.textContent =
+        chapter.title;
+
+
+    lastReadingMeta.textContent =
+        `الفصل ${
+            String(
+                chapter.number
+            ).padStart(
+                2,
+                "0"
+            )
+        }`;
+
+
+    lastChapterLabel.textContent =
+        `آخر قراءة: الفصل ${
+            String(
+                chapter.number
+            ).padStart(
+                2,
+                "0"
+            )
+        }`;
+}
+
+
+/* ==================================================
+   HOME BUTTONS
 ================================================== */
 
 startReading.addEventListener(
     "click",
     () => {
 
-        goToPage("chapters");
+        goToPage(
+            "chapters"
+        );
 
 
         if(chapterIndexData.length){
@@ -1136,25 +1360,71 @@ continueReading.addEventListener(
     "click",
     () => {
 
-        goToPage("chapters");
+        goToPage(
+            "chapters"
+        );
 
 
-        if(chapterIndexData.length){
+        const chapter =
+            findChapter(
+                Number(
+                    state.lastChapter
+                )
+            );
 
-            const savedChapter =
-                findChapter(
-                    Number(
-                        state.lastChapter
-                    )
-                );
 
+        if(chapter){
 
             openChapter(
-                savedChapter
-                    ? Number(savedChapter.number)
-                    : Number(
-                        chapterIndexData[0].number
-                    )
+                Number(
+                    chapter.number
+                )
+            );
+
+        }else if(chapterIndexData.length){
+
+            openChapter(
+                Number(
+                    chapterIndexData[0].number
+                )
+            );
+        }
+
+    }
+);
+
+
+homeContinueBtn.addEventListener(
+    "click",
+    () => {
+
+        goToPage(
+            "chapters"
+        );
+
+
+        const chapter =
+            findChapter(
+                Number(
+                    state.lastChapter
+                )
+            );
+
+
+        if(chapter){
+
+            openChapter(
+                Number(
+                    chapter.number
+                )
+            );
+
+        }else if(chapterIndexData.length){
+
+            openChapter(
+                Number(
+                    chapterIndexData[0].number
+                )
             );
 
         }
@@ -1164,7 +1434,7 @@ continueReading.addEventListener(
 
 
 /* ==================================================
-   READER SETTINGS PANEL
+   READING SETTINGS PANEL
 ================================================== */
 
 readingSettingsBtn.addEventListener(
@@ -1195,46 +1465,106 @@ closeReadingSettings.addEventListener(
 
 
 /* ==================================================
-   CLOSE PANELS OUTSIDE
+   READER SETTINGS
 ================================================== */
 
-document.addEventListener(
-    "click",
-    event => {
+function applyReaderSettings(){
 
-        if(
-            !readingSettingsPanel.classList.contains(
-                "hidden"
-            ) &&
-            !readingSettingsPanel.contains(event.target) &&
-            event.target !== readingSettingsBtn
-        ){
+    document.documentElement.style.setProperty(
+        "--reader-size",
+        `${state.reader.fontSize}rem`
+    );
 
-            readingSettingsPanel.classList.add(
-                "hidden"
+
+    document.documentElement.style.setProperty(
+        "--reader-line",
+        state.reader.lineHeight
+    );
+
+
+    document.documentElement.style.setProperty(
+        "--reader-paragraph",
+        `${state.reader.paragraphSpacing}px`
+    );
+
+
+    document.documentElement.style.setProperty(
+        "--reader-width",
+        `${state.reader.width}ch`
+    );
+
+
+    document.documentElement.style.setProperty(
+        "--reader-align",
+        state.reader.align
+    );
+
+
+    readerText.classList.remove(
+        "theme-dark",
+        "theme-sepia",
+        "theme-light"
+    );
+
+
+    readerText.classList.add(
+        `theme-${state.reader.theme}`
+    );
+
+
+    readerText.classList.remove(
+        "font-cairo",
+        "font-ruqaa"
+    );
+
+
+    readerText.classList.add(
+        `font-${state.reader.font}`
+    );
+
+
+    readerThemeButtons.forEach(
+        button => {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.readerTheme ===
+                state.reader.theme
             );
+
         }
+    );
 
 
-        if(
-            !chapterIndex.classList.contains(
-                "hidden"
-            ) &&
-            !chapterIndex.contains(event.target) &&
-            event.target !== showChapterIndex
-        ){
+    readerFontButtons.forEach(
+        button => {
 
-            chapterIndex.classList.add(
-                "hidden"
+            button.classList.toggle(
+                "active",
+                button.dataset.readerFont ===
+                state.reader.font
             );
-        }
 
-    }
-);
+        }
+    );
+
+
+    readerAlignButtons.forEach(
+        button => {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.readerAlign ===
+                state.reader.align
+            );
+
+        }
+    );
+}
 
 
 /* ==================================================
-   READER FONT SIZE
+   FONT SIZE
 ================================================== */
 
 fontStepButtons.forEach(
@@ -1277,7 +1607,7 @@ fontStepButtons.forEach(
 
 
 /* ==================================================
-   READER LINE HEIGHT
+   LINE HEIGHT
 ================================================== */
 
 lineStepButtons.forEach(
@@ -1450,84 +1780,29 @@ readerFontButtons.forEach(
 
 
 /* ==================================================
-   APPLY READER SETTINGS
+   READER ALIGNMENT
 ================================================== */
 
-function applyReaderSettings(){
+readerAlignButtons.forEach(
+    button => {
 
-    document.documentElement.style.setProperty(
-        "--reader-size",
-        `${state.reader.fontSize}rem`
-    );
+        button.addEventListener(
+            "click",
+            () => {
 
-
-    document.documentElement.style.setProperty(
-        "--reader-line",
-        state.reader.lineHeight
-    );
+                state.reader.align =
+                    button.dataset.readerAlign;
 
 
-    document.documentElement.style.setProperty(
-        "--reader-paragraph",
-        `${state.reader.paragraphSpacing}px`
-    );
+                saveState();
 
+                applyReaderSettings();
 
-    document.documentElement.style.setProperty(
-        "--reader-width",
-        `${state.reader.width}ch`
-    );
+            }
+        );
 
-
-    readerText.classList.remove(
-        "theme-dark",
-        "theme-sepia",
-        "theme-light"
-    );
-
-
-    readerText.classList.add(
-        `theme-${state.reader.theme}`
-    );
-
-
-    readerText.classList.remove(
-        "font-cairo",
-        "font-ruqaa"
-    );
-
-
-    readerText.classList.add(
-        `font-${state.reader.font}`
-    );
-
-
-    readerThemeButtons.forEach(
-        button => {
-
-            button.classList.toggle(
-                "active",
-                button.dataset.readerTheme ===
-                state.reader.theme
-            );
-
-        }
-    );
-
-
-    readerFontButtons.forEach(
-        button => {
-
-            button.classList.toggle(
-                "active",
-                button.dataset.readerFont ===
-                state.reader.font
-            );
-
-        }
-    );
-
-}
+    }
+);
 
 
 /* ==================================================
@@ -1566,7 +1841,6 @@ function applySiteFont(){
 
         kufi:
             '"Noto Kufi Arabic", sans-serif'
-
     };
 
 
@@ -1632,7 +1906,222 @@ animationsToggle.addEventListener(
 
 
 /* ==================================================
-   RESET ALL
+   READER PROGRESS
+================================================== */
+
+function calculateReaderProgress(){
+
+    if(
+        currentChapter === null ||
+        reader.classList.contains("hidden")
+    ){
+
+        return 0;
+    }
+
+
+    const readerTop =
+        readerText.offsetTop;
+
+
+    const readerHeight =
+        readerText.offsetHeight;
+
+
+    const viewportHeight =
+        window.innerHeight;
+
+
+    const available =
+        Math.max(
+            1,
+            readerHeight -
+            viewportHeight
+        );
+
+
+    const current =
+        Math.max(
+            0,
+            window.scrollY -
+            readerTop
+        );
+
+
+    return Math.min(
+        1,
+        Math.max(
+            0,
+            current / available
+        )
+    );
+}
+
+
+function updateReaderProgress(){
+
+    if(
+        currentChapter === null ||
+        reader.classList.contains("hidden")
+    ){
+
+        readerProgressBar.style.width =
+            "0%";
+
+        return;
+    }
+
+
+    const progress =
+        calculateReaderProgress();
+
+
+    readerProgressBar.style.width =
+        `${progress * 100}%`;
+
+
+    saveReaderProgress();
+}
+
+
+function saveReaderProgress(){
+
+    if(
+        currentChapter === null ||
+        reader.classList.contains("hidden")
+    ){
+
+        return;
+    }
+
+
+    const progress =
+        calculateReaderProgress();
+
+
+    state.readerProgress[
+        currentChapter
+    ] = progress;
+
+
+    clearTimeout(
+        readerSaveTimer
+    );
+
+
+    readerSaveTimer =
+        window.setTimeout(
+            saveState,
+            300
+        );
+}
+
+
+function restoreReaderProgress(){
+
+    if(currentChapter === null){
+
+        return;
+    }
+
+
+    const progress =
+        Number(
+            state.readerProgress[
+                currentChapter
+            ]
+        );
+
+
+    if(
+        !Number.isFinite(progress) ||
+        progress <= 0
+    ){
+
+        window.scrollTo({
+
+            top: 0,
+
+            behavior: "auto"
+        });
+
+
+        readerProgressBar.style.width =
+            "0%";
+
+        return;
+    }
+
+
+    window.requestAnimationFrame(
+        () => {
+
+            const readerTop =
+                readerText.offsetTop;
+
+
+            const available =
+                Math.max(
+                    0,
+                    readerText.offsetHeight -
+                    window.innerHeight
+                );
+
+
+            if(available <= 0){
+
+                window.scrollTo({
+
+                    top: 0,
+
+                    behavior: "auto"
+                });
+
+                return;
+            }
+
+
+            window.scrollTo({
+
+                top:
+                    readerTop +
+                    available *
+                    Math.min(
+                        1,
+                        Math.max(
+                            0,
+                            progress
+                        )
+                    ),
+
+                behavior: "auto"
+            });
+
+
+            readerProgressBar.style.width =
+                `${progress * 100}%`;
+        }
+    );
+}
+
+
+window.addEventListener(
+    "scroll",
+    updateReaderProgress,
+    {
+        passive: true
+    }
+);
+
+
+window.addEventListener(
+    "beforeunload",
+    saveReaderProgress
+);
+
+
+/* ==================================================
+   RESET ALL SETTINGS
 ================================================== */
 
 resetAllSettings.addEventListener(
@@ -1650,7 +2139,7 @@ resetAllSettings.addEventListener(
         }
 
 
-        const currentChapterSaved =
+        const preservedChapter =
             state.lastChapter;
 
 
@@ -1658,17 +2147,15 @@ resetAllSettings.addEventListener(
             cloneDefaults();
 
 
-        /*
-           نحتفظ بآخر فصل.
-           إعادة الإعدادات لا يجب أن ترجع
-           المستخدم للفصل الأول.
-        */
-
         state.lastChapter =
-            currentChapterSaved;
+            preservedChapter;
 
 
         saveState();
+
+
+        animationsToggle.checked =
+            state.animations;
 
 
         applyMotion();
@@ -1677,103 +2164,14 @@ resetAllSettings.addEventListener(
 
         applyReaderSettings();
 
-
         renderChapterList();
 
         renderChapterGrid();
 
+        updateHomeReadingInfo();
+
     }
 );
-
-
-/* ==================================================
-   READER PROGRESS
-================================================== */
-
-function updateReaderProgress(){
-
-    if(
-        reader.classList.contains(
-            "hidden"
-        )
-    ){
-
-        readerProgressBar.style.width =
-            "0%";
-
-        return;
-    }
-
-
-    const readerTop =
-        readerText.getBoundingClientRect().top +
-        window.scrollY;
-
-
-    const readerHeight =
-        readerText.offsetHeight;
-
-
-    const viewportHeight =
-        window.innerHeight;
-
-
-    const total =
-        readerTop +
-        readerHeight -
-        viewportHeight;
-
-
-    const current =
-        window.scrollY;
-
-
-    let percent = 0;
-
-
-    if(total > 0){
-
-        percent =
-            ((current - readerTop) /
-            (readerHeight - viewportHeight)) *
-            100;
-
-    }
-
-
-    percent =
-        Math.max(
-            0,
-            Math.min(
-                100,
-                percent
-            )
-        );
-
-
-    readerProgressBar.style.width =
-        `${percent}%`;
-}
-
-
-window.addEventListener(
-    "scroll",
-    updateReaderProgress,
-    {
-        passive: true
-    }
-);
-
-
-/* ==================================================
-   RESET READER PROGRESS
-================================================== */
-
-function resetReaderProgress(){
-
-    readerProgressBar.style.width =
-        "0%";
-}
 
 
 /* ==================================================
@@ -1843,8 +2241,9 @@ function escapeHTML(value){
 
 async function initialize(){
 
+
     /*
-       الدخولية تظهر دائمًا عند فتح الموقع.
+       الدخولية تظهر عند كل فتح للموقع.
     */
 
     splash.classList.remove(
@@ -1871,7 +2270,9 @@ async function initialize(){
     await loadChapterIndex();
 
 
-    goToPage("home");
+    goToPage(
+        "home"
+    );
 }
 
 
