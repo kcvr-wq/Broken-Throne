@@ -302,26 +302,46 @@
 
                     <div class="chapter-tools">
 
-                        <div class="chapter-search">
+    <div class="chapter-search">
 
-                            <input
-                                id="chapterSearch"
-                                type="search"
-                                inputmode="numeric"
-                                placeholder="ابحث برقم الفصل..."
-                                aria-label="البحث عن فصل"
-                                autocomplete="off"
-                            >
+        <input
+            id="chapterSearch"
+            type="search"
+            placeholder="رقم الفصل أو اسم الفصل..."
+            aria-label="البحث عن فصل"
+            autocomplete="off"
+        >
 
-                            <button
-                                id="chapterSearchBtn"
-                                type="button"
-                            >
-                                اذهب
-                            </button>
+        <button
+            id="chapterSearchBtn"
+            type="button"
+        >
+            بحث
+        </button>
 
-                        </div>
+    </div>
 
+    <button
+        id="showChapterIndex"
+        class="chapter-index-btn"
+        type="button"
+    >
+        الفهرس
+    </button>
+
+</div>
+
+<div class="chapter-summary">
+
+    <span id="chapterCount">
+        0 فصل
+    </span>
+
+    <span id="lastChapterLabel">
+        آخر قراءة: —
+    </span>
+
+</div>
 
                         <button
                             id="showChapterIndex"
